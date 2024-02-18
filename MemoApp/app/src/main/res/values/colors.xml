@@ -2,4 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="navbar_background">#1a1a48</color>
+    <color name="navbar_background2">#303333</color>
+    <color name="toolbar_background">#bebebe</color>
+    <color name="dialog_button_color">#26C6DA</color>
+    <color name="system_red">#ff0000</color>
+    <color name="system_transparent">#00000000</color>
+    <color name="system_blue">#0000ff</color>
+    <color name="contact_header_color">#26C6DA</color>
+    <color name="memo_background">#d8e5e5</color>
 </resources>
