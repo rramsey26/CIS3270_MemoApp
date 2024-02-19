@@ -175,7 +175,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:contentDescription="@string/button_to_display_a_list_of_contacts"
+            android:contentDescription="@string/btnListMemos"
             app:srcCompat="@drawable/memoicon"
             tools:ignore="RedundantDescriptionCheck" />
 
