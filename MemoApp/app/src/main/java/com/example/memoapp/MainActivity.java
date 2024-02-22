@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.sql.Date;
@@ -32,9 +34,18 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         setContentView(R.layout.activity_main);
         initToggleButton();
         setForEditing(false);
-//        initSettingsButton();
+        initSettingsButton();
+        initMemoListButton();
+        initSaveButton();
         initChangeDateButton();
         initTextChangedEvents();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            initMemo(extras.getInt("memoID"));
+        } else {
+            currentMemo = new Memo();
+        }
+
     }
 
     private void initToggleButton() {
@@ -89,6 +100,31 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         });
     }
 
+    private void initMemo(int id) {
+        DataSource ds = new DataSource(MainActivity.this);
+        try {
+            ds.open();
+            currentMemo = ds.getSpecificMemo(id);
+            ds.close();
+        } catch (Exception e) {
+            Toast.makeText(this, "Load Memo Failed", Toast.LENGTH_LONG).show();
+        }
+
+        EditText editSubject = findViewById(R.id.editSubject);
+        EditText editDetails = findViewById(R.id.editDetails);
+        TextView editDate = findViewById(R.id.calendarView);
+        RadioButton low = findViewById(R.id.radioButtonLow);
+        RadioButton medium = findViewById(R.id.radioButtonMed);
+        RadioButton high = findViewById(R.id.radioButtonHigh);
+
+        editSubject.setText(currentMemo.getSubject());
+        editDetails.setText(currentMemo.getDetails());
+        editDate.setText(currentMemo.getDate().toString());
+        low.setText(currentMemo.getPriority_level());
+        medium.setText(currentMemo.getPriority_level());
+        high.setText(currentMemo.getPriority_level());
+    }
+
     private void initTextChangedEvents() {
         final EditText etSubject = findViewById(R.id.editSubject);
 
@@ -131,18 +167,64 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     }
 
+    private void initSaveButton() {
+        Button saveButtom = findViewById(R.id.buttonSave);
 
-//    private void initSettingsButton() {
-//        ImageButton ibList = findViewById(R.id.imageButtonSettings);
-//        ibList.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(intent);
-//            }
-//        });
-//    }
+        saveButtom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean wasSuccessful;
+                //  hideKeyboard();
+                DataSource ds = new DataSource(MainActivity.this);
+                try {
+                    ds.open();
+
+                    if (currentMemo.getMemoID() == -1) {
+                        wasSuccessful = ds.insertMemo(currentMemo);
+                        if (wasSuccessful) {
+                            int newID = ds.getLastMemoID();
+                            currentMemo.setMemoID(newID);}
+                        } else {
+                            wasSuccessful = ds.updateMemo(currentMemo);
+                        }
+                        ds.open();
+                    } catch(Exception e){
+                        wasSuccessful = false;
+                    }
+                    if (wasSuccessful) {
+                        ToggleButton editToggle = findViewById(R.id.toggleButtonEdit);
+                        editToggle.toggle();
+                        setForEditing(false);
+                    }
+                }
+
+        });
+    }
+
+
+    private void initSettingsButton() {
+        ImageButton ibList = findViewById(R.id.imageButtonSettings);
+        ibList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void initMemoListButton() {
+        ImageButton ibList = findViewById(R.id.imageButtonList);
+        ibList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MemoListActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+    }
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
