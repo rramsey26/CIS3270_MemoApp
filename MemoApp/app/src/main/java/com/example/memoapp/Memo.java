@@ -3,7 +3,7 @@ package com.example.memoapp;
 import java.util.Calendar;
 
 public class Memo {
-        private int memoID;
+    private int memoID;
     private String subject;
     private String details;
     private Calendar date;
