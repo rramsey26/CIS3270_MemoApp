@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     }
 
     public void didFinishDatePickerDialog(Calendar selectedTime) {
-        TextView dateButton = findViewById(R.id.btnCalendar);
+        TextView dateButton = findViewById(R.id.textMemoDate);
         dateButton.setText(DateFormat.format("MM/dd/yyyy", selectedTime));
         currentMemo.setDate(selectedTime);
     }
@@ -120,9 +120,9 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         editSubject.setText(currentMemo.getSubject());
         editDetails.setText(currentMemo.getDetails());
         editDate.setText(currentMemo.getDate().toString());
-        low.setText(currentMemo.getPriority_level());
-        medium.setText(currentMemo.getPriority_level());
-        high.setText(currentMemo.getPriority_level());
+        low.setText(currentMemo.getPriority());
+        medium.setText(currentMemo.getPriority());
+        high.setText(currentMemo.getPriority());
     }
 
     private void initTextChangedEvents() {
@@ -167,6 +167,17 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     }
 
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        EditText editSubject = findViewById(R.id.editSubject);
+        imm.hideSoftInputFromWindow(editSubject.getWindowToken(), 0);
+
+        EditText editMemo = findViewById(R.id.editDetails);
+        imm.hideSoftInputFromWindow(editMemo.getWindowToken(),0);
+
+    }
+
     private void initSaveButton() {
         Button saveButtom = findViewById(R.id.buttonSave);
 
@@ -174,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             @Override
             public void onClick(View view) {
                 boolean wasSuccessful;
-                //  hideKeyboard();
+                hideKeyboard();
                 DataSource ds = new DataSource(MainActivity.this);
                 try {
                     ds.open();
