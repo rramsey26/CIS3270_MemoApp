@@ -212,18 +212,23 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     ds.open();
 
 
-                    String priorityLevel;
+                    String priority;
+                    int priorityLevel;
                     int selectedRadioButtonId = radioGroupPriority.getCheckedRadioButtonId();
                     if (selectedRadioButtonId == R.id.radioButtonHigh) {
-                        priorityLevel = "High";
+                        priority = "High";
+                        priorityLevel = 3;
                     } else if (selectedRadioButtonId == R.id.radioButtonMed) {
-                        priorityLevel = "Medium";
+                        priority = "Medium";
+                        priorityLevel = 2;
                     } else {
-                        priorityLevel = "Low";
+                        priority = "Low";
+                        priorityLevel = 1;
                     }
 
 
-                    currentMemo.setPriority(priorityLevel);
+                    currentMemo.setPriority(priority);
+                    currentMemo.setPriority_level(priorityLevel);
 
                     if (currentMemo.getMemoID() == -1) {
                         wasSuccessful = ds.insertMemo(currentMemo);
