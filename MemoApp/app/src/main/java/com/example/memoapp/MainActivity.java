@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -17,21 +16,35 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.sql.Date;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
+
 
 public class MainActivity extends AppCompatActivity implements DatePickerDialog.SaveDateListener {
 
     private Memo currentMemo;
 
+    private RadioGroup radioGroupPriority;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        String currentDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(new Date());
+
+        TextView calendarDate = findViewById(R.id.textMemoDate);
+
+        radioGroupPriority = findViewById(R.id.radioGroupPriority);
+
+        calendarDate.setText(currentDate);
         initToggleButton();
         setForEditing(false);
         initSettingsButton();
@@ -45,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         } else {
             currentMemo = new Memo();
         }
+
+
 
     }
 
@@ -120,9 +135,15 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         editSubject.setText(currentMemo.getSubject());
         editDetails.setText(currentMemo.getDetails());
         editDate.setText(currentMemo.getDate().toString());
-        low.setText(currentMemo.getPriority());
-        medium.setText(currentMemo.getPriority());
-        high.setText(currentMemo.getPriority());
+
+        String priorityLevel = currentMemo.getPriority();
+        if (priorityLevel.equals("Low")) {
+            low.setChecked(true);
+        } else if (priorityLevel.equals("Medium")) {
+            medium.setChecked(true);
+        } else if (priorityLevel.equals("High")) {
+            high.setChecked(true);
+        }
     }
 
     private void initTextChangedEvents() {
@@ -189,6 +210,20 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 DataSource ds = new DataSource(MainActivity.this);
                 try {
                     ds.open();
+
+
+                    String priorityLevel;
+                    int selectedRadioButtonId = radioGroupPriority.getCheckedRadioButtonId();
+                    if (selectedRadioButtonId == R.id.radioButtonHigh) {
+                        priorityLevel = "High";
+                    } else if (selectedRadioButtonId == R.id.radioButtonMed) {
+                        priorityLevel = "Medium";
+                    } else {
+                        priorityLevel = "Low";
+                    }
+
+
+                    currentMemo.setPriority(priorityLevel);
 
                     if (currentMemo.getMemoID() == -1) {
                         wasSuccessful = ds.insertMemo(currentMemo);
