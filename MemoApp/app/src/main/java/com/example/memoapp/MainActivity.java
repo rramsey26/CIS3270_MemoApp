@@ -134,7 +134,9 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
         editSubject.setText(currentMemo.getSubject());
         editDetails.setText(currentMemo.getDetails());
-        editDate.setText(currentMemo.getDate().toString());
+        // add this if statement for the app not to crash, but the date is not being retrieved
+        if (editDate != null) {editDate.setText(currentMemo.getDate().toString());}
+       // editDate.setText(currentMemo.getDate().toString());
 
         String priorityLevel = currentMemo.getPriority();
         if (priorityLevel.equals("Low")) {
