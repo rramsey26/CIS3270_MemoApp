@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
         EditText editSubject = findViewById(R.id.editSubject);
         EditText editDetails = findViewById(R.id.editDetails);
-        TextView editDate = findViewById(R.id.calendarView);
+        TextView editDate = findViewById(R.id.textMemoDate);
         RadioButton low = findViewById(R.id.radioButtonLow);
         RadioButton medium = findViewById(R.id.radioButtonMed);
         RadioButton high = findViewById(R.id.radioButtonHigh);
@@ -135,8 +135,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         editSubject.setText(currentMemo.getSubject());
         editDetails.setText(currentMemo.getDetails());
         // add this if statement for the app not to crash, but the date is not being retrieved
-        if (editDate != null) {editDate.setText(currentMemo.getDate().toString());}
-       // editDate.setText(currentMemo.getDate().toString());
+//        if (editDate != null) {editDate.setText(currentMemo.getDate().toString());}
+        editDate.setText(DateFormat.format("MM/dd/yyyy", currentMemo.getDate().getTimeInMillis()).toString());
 
         String priorityLevel = currentMemo.getPriority();
         if (priorityLevel.equals("Low")) {
@@ -219,13 +219,13 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     int selectedRadioButtonId = radioGroupPriority.getCheckedRadioButtonId();
                     if (selectedRadioButtonId == R.id.radioButtonHigh) {
                         priority = "High";
-                        priorityLevel = 3;
+                        priorityLevel = 1;
                     } else if (selectedRadioButtonId == R.id.radioButtonMed) {
                         priority = "Medium";
                         priorityLevel = 2;
                     } else {
                         priority = "Low";
-                        priorityLevel = 1;
+                        priorityLevel = 3;
                     }
 
 
